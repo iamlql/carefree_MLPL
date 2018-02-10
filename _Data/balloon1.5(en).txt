@@ -1,0 +1,12 @@
+y,s,a,h,s
+y,s,a,f,e
+y,s,c,h,s
+y,s,c,f,e
+y,s,c,f,e
+y,l,a,f,e
+y,l,a,h,e
+y,l,a,f,e
+y,l,c,h,s
+p,s,a,h,s
+p,s,c,h,s
+p,l,c,h,s
