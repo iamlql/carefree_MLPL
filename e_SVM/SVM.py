@@ -48,4 +48,32 @@ class SVM(KernelBase):
 	def _upper_dw_cache(self, idx1, idx2, da1, da2, y1, y2):
 		self._dw_cache = np.array([da1 * y1, da2 * y2])
 
-	def
+	def _update_alpha(self, idx1, idx2):
+		l, h = self._get_lower_bound(idx1, idx2), self._get_upper_bound(idx1, idx2)
+		y1, y2 = self._y[idx1], self._y[idx2]
+		e1 = self._prediction_cache[idx1] - self._y[idx1]
+		e2 = self._prediction_cache[idx2] - self._y[idx2]
+		eta = self._gram[idx1][idx1] + self._gram[idx2][idx2] - 2 * self._gram[idx1][idx2]
+		a2_new = self._alpha[idx2] + (y2 * (e1 - e2)) / eta
+		if a2_new > h:
+			a2_new = h
+		elif a2_new < l:
+			a2_new = l
+		a1_old, a2_old = self._alpha[idx1], self._alpha[idx2]
+		da2 = a2_new - a2_old
+		da1 = -y1 * y2 * da2
+		self._alpha[idx1] += da1
+		self._alpha[idx2] = a2_new
+		self._update_dw_cache(idx1, idx2, da1, da2, y1, y2)
+		self._update_db_cache(idx1, idx2, da1, da2, y1, y2, e1, e2)
+		self._update_pred_cache(idx1, idx2)
+
+	def _prepare(self, **kwargs):
+		self._c = kwargs.get('c', KernelConfig.default_c)
+
+	def _fit(self, sample_weight, tol):
+		idx1 = self._pick_first(tol)
+		if idx1 is None:
+			return True
+		idx2 = self._pick_second(idx1)
+		self._update_alpha(idx1, idx2)
