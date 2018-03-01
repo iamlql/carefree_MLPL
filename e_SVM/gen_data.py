@@ -18,8 +18,8 @@ def gen_spin(size = 30):
 	for i in xrange(4):
 		ix = range(size*i, size*(i+1))
 		r = np.linspace(0.0, 1, size+1)[1:]
-		t = np.linspace(2*i*pi/4,2*(i+4)*pi/4, size)+np.random.random(size = size)*0.1
-		xs[ix] = np.c_[r*n.sin(t), r*np.cos(t)]
+		t = np.linspace(2*i*np.pi/4,2*(i+4)*np.pi/4, size)+np.random.random(size = size)*0.1
+		xs[ix] = np.c_[r*np.sin(t), r*np.cos(t)]
 		ys[ix] = 2*(i%2)-1
 	return xs, ys
 

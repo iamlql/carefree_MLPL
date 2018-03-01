@@ -4,7 +4,7 @@ class KernelConfig:
 	default_c = 1
 	default_p = 3
 
-class ClassfierBase:
+class ClassfierBase(object):
 	def __init__(self, *args, **kwargs):
 		self.name = self.__class__.__name__
 
@@ -55,15 +55,16 @@ class KernelBase(ClassfierBase):
 		pass
 
 	def fit(self, x, y, kernel = 'rbf', epoch = 10 ** 4, ** kwargs):
+		self._x, self._y = np.atleast_2d(x), np.array(y)
 		if kernel == "poly":
 			_p = kwargs.get("p", KernelConfig.default_p)
 			self._kernel_name = "Polynomial"
 			self._kernel_param = "degree = {}".format(_p)
 			self._kernel = lambda _x, _y: KernelBase._poly(_x, _y, _p)
 		elif kernel == "rbf":
-			_gamma = kwargs.get("gamma", 1 / self._x.shape[1])
+			_gamma = kwargs.get("gamma", 1.0 / self._x.shape[1])
 			self._kernel_name = "RBF"
-			self._kernel_param = r"$\gamma = {:8.6}$".format(_gamma)
+			self._kernel_param = "gamma = {}".format(_gamma)
 			self._kernel = lambda _x, _y: KernelBase._rbf(_x, _y, _gamma)
 		else:
 			raise NotImplementedError("Kernel '{}' has not defined".format(kernel))
@@ -71,15 +72,16 @@ class KernelBase(ClassfierBase):
 		self._alpha, self._w, self._prediction_cache = (np.zeros(len(x)), np.zeros(len(x)), np.zeros(len(x)))
 		self._gram = self._kernel(self._x, self._x)
 		self._b = 0
+		self._prepare(**kwargs)
 
 		fit_args = []
 		for name, arg in zip(self._fit_args_names, self._fit_args):
-			if name in kwargs:
-				arg = kwargs[name]
+			# if name in kwargs:
+			# 	arg = kwargs[name]
 			fit_args.append(arg)
 
 		for i in range(epoch):
-			if self._fit(sample_weight, *fit_args):
+			if self._fit(1, *fit_args):
 				break
 
 		self._update_params()
@@ -87,7 +89,7 @@ class KernelBase(ClassfierBase):
 	def _prepare(self, sample_weight, **kwargs):
 		pass
 
-	def _fit(self, *args):
+	def _fit(self, sample_weight, *fit_args):
 		pass
 
 	def _update_params(self):
@@ -107,4 +109,8 @@ class KernelBase(ClassfierBase):
 		if not get_raw_results:
 			return np.sign(y_pred)
 		return y_pred
+
+	def evaluate(self, x, y):
+		y_pred = self.predict(x)
+		print("Acc: {}  %".format(100.0*np.sum(y_pred == y)/len(y)))
 

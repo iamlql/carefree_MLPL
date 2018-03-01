@@ -45,8 +45,22 @@ class SVM(KernelBase):
 			return min(self._c, self._c + self._alpha[idx2] - self._alpha[idx1])
 		return min(self._c, self._alpha[idx1] + self._alpha[idx2])
 
-	def _upper_dw_cache(self, idx1, idx2, da1, da2, y1, y2):
+	def _update_dw_cache(self, idx1, idx2, da1, da2, y1, y2):
 		self._dw_cache = np.array([da1 * y1, da2 * y2])
+		self._w[idx1] += self._dw_cache[0]
+		self._w[idx2] += self._dw_cache[1]
+
+	def _update_db_cache(self, idx1, idx2, da1, da2, y1, y2, e1, e2):
+		gram_12 = self._gram[idx1][idx2]
+		b1 = -e1 - y1 * self._gram[idx1][idx1] * da1 - y2 * gram_12 * da2
+		b2 = -e2 - y1 * gram_12 * da1 - y2 * self._gram[idx2][idx2] * da2
+		self._db_cache = (b1 + b2) * 0.5
+		self._b += self._db_cache
+
+	# def _update_param(self):
+	# 	self._w = self._alpha * self._y
+	# 	_idx = np.argmax((self._alpha != 0) & (self._alpha != self._c))
+	# 	self._b = self._y[_idx] - np.sum()
 
 	def _update_alpha(self, idx1, idx2):
 		l, h = self._get_lower_bound(idx1, idx2), self._get_upper_bound(idx1, idx2)
@@ -77,3 +91,17 @@ class SVM(KernelBase):
 			return True
 		idx2 = self._pick_second(idx1)
 		self._update_alpha(idx1, idx2)
+
+def main():
+	total_num = 100
+	training_num = 200
+	# test_num = total_num - 60
+	import gen_data
+	xs, ys = gen_data.gen_spin(total_num)
+	test_kernel_smo = SVM()
+	test_kernel_smo.fit(xs[:training_num,:],ys[:training_num])
+	test_kernel_smo.evaluate(xs[training_num:,:],ys[training_num:])
+
+
+if __name__ == '__main__':
+	main()
