@@ -15,7 +15,7 @@ def gen_xor(size = 100):
 def gen_spin(size = 30):
 	xs = np.zeros((size*4,2),dtype = np.float32)
 	ys = np.zeros(size*4, dtype = np.int8)
-	for i in xrange(4):
+	for i in np.arange(4):
 		ix = range(size*i, size*(i+1))
 		r = np.linspace(0.0, 1, size+1)[1:]
 		t = np.linspace(2*i*np.pi/4,2*(i+4)*np.pi/4, size)+np.random.random(size = size)*0.1
@@ -32,7 +32,7 @@ def gen_linspace(scale = 1.0, bias = 0.0, size = 100):
 	
 if __name__ == '__main__':
 	xy = gen_linspace(100,100)
-	print np.random.permutation(xy)
+	print (np.random.permutation(xy))
 	# print z
 
 

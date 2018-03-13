@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from Timing import Timing
+from Unity.Timing import Timing
 import matplotlib.pyplot as plt
 
 
@@ -223,7 +223,7 @@ class ClassfierBase(object):
 	def evaluate(self, x, y):
 		y_pred = self.predict(x)
 		y = np.array(y)
-		print ClassfierBase.acc(y, y_pred)
+		print (ClassfierBase.acc(y, y_pred))
 
 class KernelBase(ClassfierBase):
 	def __init__(self):

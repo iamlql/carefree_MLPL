@@ -1,7 +1,9 @@
 import numpy as np
 
 import sys
-sys.path.append('/home/luql/PROJECTS/carefree_MLPL')
+sys.path.append('..')
+print(sys.path)
+
 from Unity.Bases import KernelBase, KernelConfig
 from Unity.Timing import Timing
 
