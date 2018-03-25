@@ -1,7 +1,8 @@
 import tensorflow as tf
 import numpy as np
-import os
+
 from Bases import ClassfierBase
+from Unity import DataUtil
 
 class Logistic_Regression(ClassfierBase):
 	def __init__(self):
@@ -19,18 +20,9 @@ class Logistic_Regression(ClassfierBase):
 		y_pred = self.combine_inputs(x)
 		return Logistic_Regression._ce_loss(y_pred, y)
 
-	@staticmethod
-	def read_csv(batch_size, file_name, record_defaults):
-		filename_queue = tf.train.string_input_producer([os.path.dirname(__file__)+'/'+file_name])
-		reader = tf.TextLineReader(skip_header_lines = 1)
-		key, value = reader.read(filename_queue)
-
-		decoded = tf.decode_csv(value, record_defaults = record_defaults)
-		return tf.train.shuffle_batch(decoded, batch_size = batch_size, capacity = batch_size*50, min_after_dequeue = batch_size)
-
 	def inputs(self):
 		passenager_id, survived, pclass, name, sex, age, sibsp, parch, ticket, fare, cabin, embarked = \
-		Logistic_Regression().read_csv(100, './data/train.csv', [[0.0], [0.0], [0], [""], [""], [0.0], [0.0], [0.0], [""], [0.0], [""], [""]])
+		DataUtil.read_csv(100, './data/train.csv', [[0.0], [0.0], [0], [""], [""], [0.0], [0.0], [0.0], [""], [0.0], [""], [""]])
 		is_first_class = tf.to_float(tf.equal(pclass, [1]))
 		is_second_class = tf.to_float(tf.equal(pclass, [2]))
 		is_third_class = tf.to_float(tf.equal(pclass, [3]))
@@ -52,4 +44,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-

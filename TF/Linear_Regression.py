@@ -9,7 +9,7 @@ class Linear_Regression(ClassfierBase):
 		self.b = tf.Variable(0., name = "bias")
 
 	def inference(self, x):
-		return 1.0*tf.matmul(x, self.w) + self.b
+		return tf.matmul(x, self.w) + self.b
 
 	def loss(self, x, y):
 		y_pred = self.inference(x)
