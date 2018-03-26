@@ -3,9 +3,9 @@ import numpy as np
 from Bases import ClassfierBase
 from Unity import DataUtil
 
-class Softmax_Classifier(ClassfierBase):
+class SoftmaxClassifier(ClassfierBase):
 	def __init__(self):
-		super(Softmax_Classifier, self).__init__()
+		super(SoftmaxClassifier, self).__init__()
 		self.w = tf.Variable(tf.zeros([4,3]), name = "weights")
 		self.b = tf.Variable(tf.zeros([3]), name = "bias")
 
@@ -17,7 +17,7 @@ class Softmax_Classifier(ClassfierBase):
 
 	def loss(self, x, y):
 		y_pred = self.combine_inputs(x)
-		return Softmax_Classifier._softmax_ce_loss(y_pred, y)
+		return SoftmaxClassifier._softmax_ce_loss(y_pred, y)
 
 	def inputs(self):
 		features, label = \
@@ -33,8 +33,8 @@ class Softmax_Classifier(ClassfierBase):
 		print(sess.run(tf.reduce_mean(tf.cast(tf.equal(predicted, y), tf.float32))))
 
 def main():
-	lr = Softmax_Classifier()
-	lr.training_flow(learning_rate = 0.01, )
+	lr = SoftmaxClassifier()
+	lr.fit(learning_rate = 0.01, )
 
 if __name__ == "__main__":
 	main()

@@ -4,9 +4,9 @@ import numpy as np
 from Bases import ClassfierBase
 from Unity import DataUtil
 
-class Logistic_Regression(ClassfierBase):
+class LogisticRegression(ClassfierBase):
 	def __init__(self):
-		super(Logistic_Regression, self).__init__()
+		super(LogisticRegression, self).__init__()
 		self.w = tf.Variable(tf.zeros([5, 1]), name = "weights")
 		self.b = tf.Variable(0., name = "bias")
 
@@ -18,7 +18,7 @@ class Logistic_Regression(ClassfierBase):
 
 	def loss(self, x, y):
 		y_pred = self.combine_inputs(x)
-		return Logistic_Regression._ce_loss(y_pred, y)
+		return LogisticRegression._ce_loss(y_pred, y)
 
 	def inputs(self):
 		passenager_id, survived, pclass, name, sex, age, sibsp, parch, ticket, fare, cabin, embarked = \
@@ -36,11 +36,11 @@ class Logistic_Regression(ClassfierBase):
 
 	def evaluate(self, sess, x, y):
 		predicted = tf.cast(self.inference(x) > 0.5, tf.float32)
-		print(sess.run(tf.reduce_mean(tf.cast(tf.equal(predicted, y), tf.float32))))
+		print (sess.run(tf.reduce_mean(tf.cast(tf.equal(predicted, y), tf.float32))))
 
 def main():
-	lr = Logistic_Regression()
-	lr.training_flow(learning_rate = 0.01)
+	lr = LogisticRegression()
+	lr.fit(learning_rate = 0.01, epoch = 2000)
 
 if __name__ == "__main__":
 	main()

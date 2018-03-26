@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 
-class ClassfierBase:
+class ClassfierBase(object):
 	def __init__(self):
 		self.name = self.__class__.__name__
 
@@ -44,7 +44,7 @@ class ClassfierBase:
 	def evaluate(self, sess, x, y):
 		pass
 
-	def training_flow(self, learning_rate = 0.001, training_steps = 1000):
+	def fit(self, learning_rate = 0.001, epoch = 1000):
 
 		with tf.name_scope("global_ops"):
 			saver = tf.train.Saver()
@@ -67,16 +67,16 @@ class ClassfierBase:
 
 		with tf.name_scope("Update"):
 			merged_summarys = tf.summary.merge_all()
-			writer = tf.summary.FileWriter('./Graph_{}'.format(self.name), graph = tf.get_default_graph())
-			for step in np.arange(training_steps):
+			writer = tf.summary.FileWriter('./graph{}'.format(self.name), graph = tf.get_default_graph())
+			for step in np.arange(epoch):
 				sess.run([train_op])
 				summary = sess.run(merged_summarys)
 				writer.add_summary(summary, global_step = step)
 
 				if step % 200 == 0:
-					print("loss: {}".format(sess.run([total_loss])))
+					print ("loss: {}".format(sess.run([total_loss])))
 					saver.save(sess, './backup/{}'.format(self.name), global_step = step)
-			saver.save(sess, './backup/my_model', global_step = training_steps)
+			saver.save(sess, './backup/my_model', global_step = epoch)
 			self.evaluate(sess, X, Y)
 
 		with tf.name_scope("Summaries"):
