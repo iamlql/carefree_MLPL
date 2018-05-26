@@ -18,7 +18,7 @@ class LinearSVM(ClassfierBase):
 	def loss(self, x, y):
 		y_pred = self.combine_inputs(x)
 		y_norm = tf.cast(2*y-1, tf.float32)
-		return tf.reduce_sum(tf.maximum(1 - y_norm*y_pred, 0)) + tf.nn.l2_loss(self.w)
+		return tf.reduce_sum(tf.maximum(1.0 - y_norm*y_pred, 0)) + tf.nn.l2_loss(self.w)
 
 	def inputs(self):
 		passenager_id, survived, pclass, name, sex, age, sibsp, parch, ticket, fare, cabin, embarked = \
@@ -34,12 +34,13 @@ class LinearSVM(ClassfierBase):
 		return features, survived
 
 	def evaluate(self, sess, x, y):
-		predicted = tf.cast(self.inference(x) >= 0, tf.float32)
+		predicted = tf.cast(self.inference(x) > 0, tf.float32)
 		print (sess.run(tf.reduce_mean(tf.cast(tf.equal(predicted, y), tf.float32))))
 
 def main():
 	lr = LinearSVM()
-	lr.fit(learning_rate = 0.001, epoch = 2000)
+	with tf.device("/gpu:0"):
+		lr.fit(learning_rate = 0.0001, epoch = 5000)
 
 if __name__ == "__main__":
 	main()

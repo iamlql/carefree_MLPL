@@ -1,6 +1,5 @@
 import tensorflow as tf
 import numpy as np
-
 from Bases import ClassfierBase
 from Unity import DataUtil
 
@@ -40,7 +39,7 @@ class LogisticRegression(ClassfierBase):
 
 def main():
 	lr = LogisticRegression()
-	lr.fit(learning_rate = 0.01, epoch = 2000)
+	lr.fit(learning_rate = 0.001, epoch = 2000)
 
 if __name__ == "__main__":
 	main()
